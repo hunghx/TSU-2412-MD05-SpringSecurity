@@ -1,4 +1,4 @@
-package ra.edu.config.entity;
+package ra.edu.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
