@@ -1,5 +1,6 @@
 package ra.edu.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Service
+@Slf4j
 public class AuthenService {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -28,6 +30,7 @@ public class AuthenService {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(formLogin.getUsername(), formLogin.getPassword()));
         }catch(Exception e){
+            log.error(e.getMessage());
             return ResponseData.builder()
                     .success(false)
                     .message("Username or Pass incorrect")

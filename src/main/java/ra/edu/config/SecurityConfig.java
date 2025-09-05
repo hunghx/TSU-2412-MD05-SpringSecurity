@@ -21,6 +21,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ra.edu.config.jwt.JwtAuthenticationFilter;
+import ra.edu.exception.AccessDeniedHandle;
+import ra.edu.exception.AuthenticationEntry;
 
 @Configuration
 public class SecurityConfig {
@@ -69,7 +71,7 @@ public class SecurityConfig {
         http.cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req->
-                        req.requestMatchers("/api/users/**").hasRole("USER")
+                        req.requestMatchers("/api/users/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/usersoradmin/**").hasAnyRole("ADMIN","USER")
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
@@ -79,7 +81,8 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider())
-                .httpBasic(Customizer.withDefaults()); // mặc định theo username va password : gửi trong header của request
+                .exceptionHandling(ex->ex.authenticationEntryPoint(new AuthenticationEntry())
+                        .accessDeniedHandler(new AccessDeniedHandle()));
         return http.build();
     }
 

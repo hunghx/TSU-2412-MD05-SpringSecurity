@@ -21,7 +21,6 @@ public class SecurityApplication {
             System.out.println(passwordEncoder.encode("admin123"));
             System.out.println(passwordEncoder.encode("hunghx123"));
             System.out.println(passwordEncoder.encode("123456"));
-
             System.out.println(provider.generateToken("hunghx@gmail.com"));
             System.out.println(provider.generateToken("admin@gmail.com"));
 
