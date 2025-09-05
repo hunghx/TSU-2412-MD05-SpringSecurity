@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import ra.edu.config.jwt.JwtAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
@@ -61,7 +62,7 @@ public class SecurityConfig {
     }
    @Autowired
    @Lazy
-   private AuthenticationFilter  authenticationFilter;
+   private JwtAuthenticationFilter authenticationFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -69,8 +70,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req->
                         req.requestMatchers("/api/users/**").hasRole("USER")
-                                .requestMatchers("/api/public/**").permitAll()
+                                .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/usersoradmin/**").hasAnyRole("ADMIN","USER")
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/user/**").hasAnyRole("MANAGER","USER")
+                                .requestMatchers("/api/manager/**").hasAnyRole("ADMIN","MANAGER")
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)

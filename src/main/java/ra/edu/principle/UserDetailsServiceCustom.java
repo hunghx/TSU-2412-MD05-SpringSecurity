@@ -21,10 +21,9 @@ public class UserDetailsServiceCustom implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account user = accountRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Username : "+username + " not exist!"));
-        System.out.println(user.getEmail());
-        GrantedAuthority userRole = new SimpleGrantedAuthority("ROLE_USER");
-        System.out.println(userRole.getAuthority().getBytes(StandardCharsets.UTF_8));
-        List<GrantedAuthority> grantedAuthorities = Collections.singletonList(userRole);
+        List<SimpleGrantedAuthority> grantedAuthorities = user.getRoles()
+                .stream().map(role->new SimpleGrantedAuthority(role.getRoleName().name()))
+                .toList(); // ROLE_
         UserDetails userDetails = UserDetailsCustom.builder()
                 .username(username)
                 .password(user.getPassword())
